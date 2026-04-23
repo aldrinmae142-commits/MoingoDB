@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Async JavaScript Lab</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            margin: 0;
+        }
+        .output {
+            background-color: #0e0e0e;
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 5px;
+            white-space: pre-line;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        h1 {
+            color: #4ec9b0;
+            text-align: center;
+        }
+        .step {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #2d2d2d;
+            border-left: 4px solid #4ec9b0;
+        }
+        button {
+            background-color: #4ec9b0;
+            color: #1e1e1e;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 20px 0;
+            display: block;
+            margin: 20px auto;
+        }
+        button:hover {
+            background-color: #3ba085;
+        }
+    </style>
+</head>
+<body>
+    <h1>Async JavaScript Lab - Event Loop Demo</h1>
+    <button onclick="runLab()">Run Async Lab</button>
+    <div id="output" class="output"></div>
+
+    <script>
+        const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+        const output = document.getElementById('output');
+
+        function log(message) {
+            output.textContent += message + '\n';
+        }
+
+        async function runLab() {
+            output.textContent = ''; // Clear previous output
+
+            log('\n=== Step 1: Sync ===');
+            log('A');
+            log('B');
+            log('C');
+
+            await delay(100);
+
+            log('\n=== Step 2: setTimeout (Macrotask) ===');
+            log('Start');
+            setTimeout(() => {
+                log('Timeout');
+            }, 0);
+            log('End');
+
+            await delay(100);
+
+            log('\n=== Step 3: Promise (Microtask) ===');
+            log('Start');
+            Promise.resolve().then(() => {
+                log('Promise');
+            });
+            log('End');
+
+            await delay(100);
+
+            log('\n=== Step 4: Microtask vs Macrotask ===');
+            log('Start');
+            setTimeout(() => {
+                log('Timeout');
+            }, 0);
+            Promise.resolve().then(() => {
+                log('Promise');
+            });
+            log('End');
+
+            await delay(100);
+
+            log('\n=== Step 5: Async/Await ===');
+            async function test() {
+                log('1');
+                await Promise.resolve();
+                log('2');
+            }
+            log('3');
+            test();
+            log('4');
+
+            await delay(100);
+
+            log('\n=== Step 6: Predict the Output ===');
+            log('A');
+            setTimeout(() => {
+                log('B');
+            }, 0);
+            Promise.resolve().then(() => {
+                log('C');
+            });
+            log('D');
+
+            await delay(100);
+
+            log('\n=== End of Lab ===');
+        }
+    </script>
+</body>
+</html>
