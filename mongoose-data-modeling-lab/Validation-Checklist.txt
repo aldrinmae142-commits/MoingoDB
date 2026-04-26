@@ -1,0 +1,27 @@
+Mongoose Data Modeling Lab Validation Checklist
+
+- Accuracy and completeness of User and Task schemas, including field types and required properties: 25 points
+  User schema: name (String, required), email (String, required, unique), createdAt (Date, default)
+  Task schema: title (String, required), description (String), completed (Boolean, default false), userId (ObjectId ref, required), createdAt (Date, default)
+
+- Correctness of the relationship defined between User and Task models using reference-based approach: 20 points
+  Task schema includes userId field with type: mongoose.Schema.Types.ObjectId, ref: 'User'
+  Reference-based relationship properly established
+
+- Successful implementation of Create, Read, Update, and Delete operations for both User and Task models: 20 points
+  User routes: POST, GET (all), GET (by id), PUT, DELETE
+  Task routes: POST, GET (all with populate), GET (by id), PUT, DELETE
+  All CRUD operations implemented and functional
+
+- Implementation of data validation within the schemas, ensuring data integrity: 15 points
+  Required fields: name, email in User; title, userId in Task
+  Unique constraint on email
+  Trim on string fields
+  Default values for dates and boolean
+
+- Organization of the backend project using a modular architecture for better maintainability: 20 points
+  Models in separate files (User.js, Task.js)
+  Routes in separate file (userRoutes.js)
+  Server configuration in server.js
+  Environment variables in .env
+  Clean separation of concerns

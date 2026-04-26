@@ -1,0 +1,212 @@
+Mongoose Data Modeling Lab Demonstration
+
+This lab demonstrates comprehensive understanding of data modeling in MongoDB using Mongoose.
+
+Criterion 1: Understanding of data modeling in MongoDB
+
+Data modeling in MongoDB involves designing document structures and relationships for efficient data storage and retrieval. This lab demonstrates:
+
+- Entity identification: User and Task entities with appropriate attributes
+- Relationship design: One-to-many relationship (User has many Tasks) using reference-based approach
+- Schema validation: Ensuring data integrity through required fields and constraints
+- Performance considerations: Using references for normalized data structure
+
+Code Example - User Schema:
+```javascript
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,  // Data integrity
+    trim: true       // Data cleaning
+  },
+  email: {
+    type: String,
+    required: true,  // Required field
+    unique: true,    // Uniqueness constraint
+    lowercase: true, // Data normalization
+    trim: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now  // Automatic timestamp
+  }
+});
+```
+
+Criterion 2: Creation of Mongoose schemas and models
+
+Mongoose schemas define document structure, and models provide database operations interface.
+
+Schema Creation:
+- Define field types (String, Date, Boolean, ObjectId)
+- Set validation rules (required, unique)
+- Add default values
+- Create indexes implicitly through unique constraints
+
+Model Creation:
+- Compile schema into model
+- Export for use in application
+- Provides CRUD methods
+
+Code Example - Task Schema and Model:
+```javascript
+const taskSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  description: {
+    type: String,
+    trim: true
+  },
+  completed: {
+    type: Boolean,
+    default: false
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+module.exports = mongoose.model('Task', taskSchema);
+```
+
+Criterion 3: Definition of field types, required properties, and defaults
+
+Field Types:
+- String: For text data (name, email, title, description)
+- Date: For timestamps (createdAt)
+- Boolean: For status flags (completed)
+- ObjectId: For references (userId)
+
+Required Properties:
+- Ensures data completeness
+- Prevents null/undefined values
+- Enforces business rules
+
+Defaults:
+- Provide sensible initial values
+- Automatic timestamps
+- Boolean flags set to false
+
+Code Example - Field Definitions:
+```javascript
+// String with validation
+name: { type: String, required: true, trim: true }
+
+// Unique constraint
+email: { type: String, required: true, unique: true }
+
+// Boolean with default
+completed: { type: Boolean, default: false }
+
+// Date with default
+createdAt: { type: Date, default: Date.now }
+
+// Reference field
+userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
+```
+
+Criterion 4: Establishment of relationships between collections
+
+MongoDB relationships implemented using reference-based approach:
+
+Reference-Based Relationship:
+- Store ObjectId of related document
+- Use ref property to specify collection
+- Populate references when needed
+- Maintains data normalization
+
+One-to-Many Relationship:
+- User can have multiple Tasks
+- Task belongs to one User
+- Implemented via userId field in Task schema
+
+Code Example - Relationship Implementation:
+```javascript
+// In Task schema
+userId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'User',      // References User model
+  required: true    // Ensures relationship exists
+}
+
+// Population in queries
+const tasks = await Task.find().populate('userId', 'name email');
+
+// Result includes user data
+{
+  "_id": "...",
+  "title": "Complete project",
+  "userId": {
+    "_id": "...",
+    "name": "John Doe",
+    "email": "john@example.com"
+  }
+}
+```
+
+Criterion 5: Basic CRUD operations using models
+
+Mongoose models provide methods for Create, Read, Update, Delete operations:
+
+Create:
+- new Model(data).save()
+- Model.create(data)
+
+Read:
+- Model.find() - Get all
+- Model.findById(id) - Get by ID
+- Model.findOne(query) - Get one matching query
+
+Update:
+- Model.findByIdAndUpdate(id, data, options)
+
+Delete:
+- Model.findByIdAndDelete(id)
+
+Code Examples - CRUD Operations:
+
+```javascript
+// CREATE
+router.post('/users', async (req, res) => {
+  const user = new User(req.body);
+  await user.save();
+  res.status(201).json(user);
+});
+
+// READ
+router.get('/users', async (req, res) => {
+  const users = await User.find();
+  res.json(users);
+});
+
+router.get('/users/:id', async (req, res) => {
+  const user = await User.findById(req.params.id);
+  res.json(user);
+});
+
+// UPDATE
+router.put('/users/:id', async (req, res) => {
+  const user = await User.findByIdAndUpdate(req.params.id, req.body, { 
+    new: true, 
+    runValidators: true 
+  });
+  res.json(user);
+});
+
+// DELETE
+router.delete('/users/:id', async (req, res) => {
+  await User.findByIdAndDelete(req.params.id);
+  res.json({ message: 'User deleted' });
+});
+```
+
+This lab demonstrates complete data modeling proficiency with proper schema design, relationships, validations, and CRUD operations.
