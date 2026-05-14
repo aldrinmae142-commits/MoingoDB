@@ -1,0 +1,19 @@
+{
+  "name": "input-validation-lab",
+  "version": "1.0.0",
+  "description": "Node.js and Express input validation lab with comprehensive validation middleware",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": ["express", "validation", "nodejs", "middleware"],
+  "author": "Aldrin Magalang",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
